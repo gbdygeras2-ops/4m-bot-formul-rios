@@ -14,6 +14,15 @@ const TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = "1468785989299474534";  // ID do bot
 const GUILD_ID = "1483618517210108086";   // ID do servidor
 
+// Defina o ID do canal onde o bot enviará as mensagens de info
+const CANAL_INFO = "1483618518808395906";  // substitua pelo ID correto do seu canal
+
+// IDs dos canais que o bot deve ignorar (bloqueados)
+const CANAIS_BLOQUEADOS = [
+  "1483618518808395908",
+  // adicione outros canais que quiser bloquear aqui
+];
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -36,14 +45,18 @@ function formatTempo(minutos) {
 // Bot online
 client.once('ready', async () => {
   console.log(`✅ Logado como ${client.user.tag}`);
-  const canal = await client.channels.fetch(CANAL_INFO);
-  canal.send({
-    embeds: [new EmbedBuilder()
-      .setTitle("📊 Bate Ponto 4m")
-      .setDescription("🚀 Sistema Automático de Bate Ponto Ativado! Agora não é necessário usar comandos.")
-      .setColor("Blue")
-      .setImage("https://i.ibb.co/x8SmhSg5/4m.webp")]
-  });
+  try {
+    const canal = await client.channels.fetch(CANAL_INFO);
+    await canal.send({
+      embeds: [new EmbedBuilder()
+        .setTitle("📊 Bate Ponto 4m")
+        .setDescription("🚀 Sistema Automático de Bate Ponto Ativado! Agora não é necessário usar comandos.")
+        .setColor("Blue")
+        .setImage("https://i.ibb.co/x8SmhSg5/4m.webp")]
+    });
+  } catch (error) {
+    console.error("Erro ao enviar mensagem no canal de informação:", error);
+  }
 });
 
 // Detecta entrada e saída de call
@@ -64,7 +77,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
   }
 });
 
-// Comandos slash (mantidos simplificados)
+// Comandos slash (simplificados)
 const commands = [
   new SlashCommandBuilder()
     .setName("ranking")
@@ -74,10 +87,15 @@ const commands = [
 // Registrar comandos
 const rest = new REST({ version: '10' }).setToken(TOKEN);
 (async () => {
-  await rest.put(
-    Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
-    { body: commands }
-  );
+  try {
+    await rest.put(
+      Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID),
+      { body: commands }
+    );
+    console.log("Comandos registrados com sucesso!");
+  } catch (error) {
+    console.error("Erro ao registrar comandos:", error);
+  }
 })();
 
 // Logar o bot
