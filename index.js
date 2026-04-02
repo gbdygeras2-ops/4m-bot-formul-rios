@@ -11,8 +11,8 @@ const {
 // Pega o token seguro do ambiente
 const TOKEN = process.env.DISCORD_TOKEN;
 
-const CLIENT_ID = "1485745489721950299";  // ID do bot
-const GUILD_ID = "1484334313976762450";   // ID do servidor
+const CLIENT_ID = "1468785989299474534";  // ID do bot
+const GUILD_ID = "1483618517210108086";   // ID do servidor
 
 // IDs dos canais (mantidos do seu código original)
 const CANAL_LOG = "1484334315096768715";
